@@ -5,15 +5,12 @@ const { User } = require('../models');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    console.log(req.body)
     const { username, password } = req.body;
 
-    // Проверка наличия данных
     if (!username || !password) {
         return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    // Хеширование пароля
     const hashedPassword = await bcrypt.hash(password, 10);
     
     try {

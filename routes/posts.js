@@ -15,15 +15,27 @@ router.post('/', authenticate, async (req, res) => {
 });
 
 router.patch('/:id', authenticate, async (req, res) => {
-    const post = await Post.findByPk(req.params.id);
-    if (post.authorId !== req.user.id) return res.status(403).json({ message: 'Forbidden' });
+    const post = await Post.findOne({
+        where: {
+            id: req.params.id,
+            authorId: req.user.id
+        }
+    });
+
+    if (!post) return res.status(404).json({ message: 'Пост не найден' });
     post.update(req.body);
     res.json(post);
 });
 
 router.delete('/:id', authenticate, async (req, res) => {
-    const post = await Post.findByPk(req.params.id);
-    if (post.authorId !== req.user.id) return res.status(403).json({ message: 'Forbidden' });
+        const post = await Post.findOne({
+        where: {
+            id: req.params.id,
+            authorId: req.user.id
+        }
+    });
+    if (!post) return res.status(404).json({ message: 'Пост не найден' });
+
     await post.destroy();
     res.status(204).send();
 });
